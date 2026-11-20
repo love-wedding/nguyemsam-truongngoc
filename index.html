@@ -10718,46 +10718,7 @@
             }
         })();
     </script>
-    <script>
-(function () {
-  var audio = document.getElementById('123');
-  if (!audio) return;
-
-  audio.preload = 'auto';
-  audio.load();
-
-  // Các sự kiện được trình duyệt tính là "người dùng đã tương tác"
-  var events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
-
-  function removeAll() {
-    events.forEach(function (e) {
-      document.removeEventListener(e, unlock, true);
-    });
-  }
-
-  function unlock() {
-    var p = audio.play();
-    if (p && p.then) {
-      p.then(removeAll).catch(function () { /* chưa được phép, chờ lần chạm sau */ });
-    } else {
-      removeAll();
-    }
-  }
-
-  // Thử phát ngay khi tải trang (desktop/trình duyệt cho phép sẽ chạy luôn)
-  unlock();
-
-  // Chạm lần đầu là phát ngay
-  events.forEach(function (e) {
-    document.addEventListener(e, unlock, true);
-  });
-
-  // Quay lại tab thì phát tiếp
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && audio.paused) unlock();
-  });
-})();
-</script>
+   
 </body>
 
 </html>
