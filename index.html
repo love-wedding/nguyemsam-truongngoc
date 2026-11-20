@@ -9415,7 +9415,7 @@
 
     <audio id="123" autoplay
         src="https://statics.pancake.vn/web-media/5e/ee/bf/4a/afa10d3bdf98ca17ec3191ebbfd3c829d135d06939ee1f1b712d731d-w:0-h:0-l:2938934-t:audio/mpeg.mp3"
-        preload="none" loop></audio>
+        preload="auto" loop></audio>
 
 
 
@@ -10718,6 +10718,46 @@
             }
         })();
     </script>
+    <script>
+(function () {
+  var audio = document.getElementById('123');
+  if (!audio) return;
+
+  audio.preload = 'auto';
+  audio.load();
+
+  // Các sự kiện được trình duyệt tính là "người dùng đã tương tác"
+  var events = ['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'];
+
+  function removeAll() {
+    events.forEach(function (e) {
+      document.removeEventListener(e, unlock, true);
+    });
+  }
+
+  function unlock() {
+    var p = audio.play();
+    if (p && p.then) {
+      p.then(removeAll).catch(function () { /* chưa được phép, chờ lần chạm sau */ });
+    } else {
+      removeAll();
+    }
+  }
+
+  // Thử phát ngay khi tải trang (desktop/trình duyệt cho phép sẽ chạy luôn)
+  unlock();
+
+  // Chạm lần đầu là phát ngay
+  events.forEach(function (e) {
+    document.addEventListener(e, unlock, true);
+  });
+
+  // Quay lại tab thì phát tiếp
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && audio.paused) unlock();
+  });
+})();
+</script>
 </body>
 
 </html>
